@@ -1,0 +1,10 @@
+name = "duniamu"
+compatibility_date = "2024-11-01"
+pages_build_output_dir = "public"
+
+[[kv_namespaces]]
+binding = "MISSION_KV"
+id = "c849d0d7810547bd97f465322cc7ba20"
+
+[vars]
+ADMIN_PATH = "nesahera"
