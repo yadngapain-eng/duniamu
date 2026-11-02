@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Duniamu — Selesaikan Misi, Hasilkan 💸</title>
+<meta name="description" content="Duniamu - Platform misi berhadiah. Selesaikan misi, hasilkan uang."/>
+<link rel="icon" type="image/svg+xml" href="logo.svg"/>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<div class="bg-glow"></div>
+
+<header class="navbar">
+  <div class="brand">
+    <img src="logo.svg" alt="Duniamu" class="logo"/>
+    <div class="brand-text">
+      <div class="brand-name">Duniamu</div>
+      <div class="brand-tag">Selesaikan Misi, Hasilkan 💸</div>
+    </div>
+  </div>
+  <a id="repoLink" href="https://github.com/yadngapain-eng" target="_blank" class="btn-ghost">⭐ GitHub</a>
+</header>
+
+<main class="hero">
+  <div class="logo-hero">
+    <img src="logo.svg" alt="Duniamu" class="big-logo"/>
+  </div>
+  <h1>Selesaikan Misi, <span class="gradient">Hasilkan 💸</span></h1>
+  <p class="subtitle" id="siteSubtitle">Kerjakan misi di bawah ini dan klaim hadiahmu.</p>
+
+  <div class="stats">
+    <div class="stat-card"><div class="stat-value" id="totalMissions">0</div><div class="stat-label">Total Misi</div></div>
+    <div class="stat-card"><div class="stat-value" id="doneMissions">0</div><div class="stat-label">Selesai</div></div>
+    <div class="stat-card"><div class="stat-value" id="totalReward">0</div><div class="stat-label">Reward Poin</div></div>
+  </div>
+
+  <section class="missions" id="missionList"></section>
+
+  <div class="claim-form" id="claimForm" style="display:none">
+    <h2>💰 Klaim Reward</h2>
+    <input id="claimName" placeholder="Nama lengkap" required/>
+    <input id="claimContact" placeholder="Email / WhatsApp" required/>
+    <select id="claimPayment" required></select>
+    <button class="btn-claim" id="submitClaim">Kirim Klaim</button>
+  </div>
+
+  <button class="btn-claim" id="claimBtn" disabled>💰 Klaim Reward</button>
+  <p class="footer" id="footer">© 2025 Duniamu</p>
+</main>
+
+<div class="toast" id="toast"></div>
+<script src="app.js"></script>
+</body>
+</html>
