@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow,noarchive"/>
+<title>·</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',system-ui,sans-serif}
+:root{--bg:#0a0e1a;--card:#121a2b;--border:#1f2a44;--accent:#00e0ff;--accent2:#a855f7;--accent3:#ff2d95;--gold:#ffd700;--text:#e5eefc;--muted:#7d8ba3;--ok:#22c55e;--warn:#f59e0b;--err:#ef4444}
+body{background:var(--bg);color:var(--text);min-height:100vh;padding:20px}
+.login-box{max-width:380px;margin:100px auto;background:var(--card);border:1px solid var(--border);
+  border-radius:16px;padding:32px;display:flex;flex-direction:column;gap:14px;
+  box-shadow:0 20px 60px rgba(0,224,255,.1)}
+.login-box h1{font-size:22px;background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent3));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:900}
+.login-box input{padding:14px;border:1px solid var(--border);border-radius:10px;
+  background:var(--bg);color:var(--text);font-size:15px;outline:none;transition:.2s}
+.login-box input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,224,255,.1)}
+.login-box button{padding:14px;border:none;border-radius:10px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent3));
+  color:#0a0e1a;font-weight:800;font-size:15px;cursor:pointer;transition:.2s}
+.login-box button:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(0,224,255,.3)}
+#app{display:none;max-width:1100px;margin:0 auto}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;
+  padding-bottom:16px;border-bottom:1px solid var(--border)}
+.header h1{font-size:20px;background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent3));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.tab{padding:10px 18px;border:1px solid var(--border);border-radius:10px;background:var(--card);
+  color:var(--text);cursor:pointer;font-size:14px;transition:.2s}
+.tab.active{background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent3));
+  color:#0a0e1a;border:none;font-weight:800}
+.panel{display:none;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px}
+.panel.active{display:block}
+.panel h2{font-size:18px;margin-bottom:16px}
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.field label{font-size:13px;color:var(--muted)}
+.field input,.field select{padding:10px 12px;border:1px solid var(--border);border-radius:10px;
+  background:var(--bg);color:var(--text);font-size:14px;outline:none}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{padding:9px 16px;border:none;border-radius:10px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  color:#0a0e1a;font-weight:800;font-size:13px;cursor:pointer;transition:.2s}
+.btn:hover{transform:translateY(-1px)}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text)}
+.btn-danger{background:var(--err);color:#fff}
+.btn-ok{background:var(--ok);color:#fff}
+.item{display:flex;flex-direction:column;gap:8px;padding:14px;background:var(--bg);
+  border:1px solid var(--border);border-radius:10px;margin-bottom:10px}
+.item input{flex:1;min-width:120px;padding:8px 10px;border:1px solid var(--border);
+  border-radius:8px;background:var(--card);color:var(--text)}
+.status{padding:3px 10px;border-radius:20px;font-size:12px;font-weight:800;text-transform:uppercase}
+.status.pending{background:rgba(245,158,11,.2);color:var(--warn)}
+.status.paid{background:rgba(34,197,94,.2);color:var(--ok)}
+.status.rejected{background:rgba(239,68,68,.2);color:var(--err)}
+.table{width:100%;border-collapse:collapse;font-size:14px}
+.table th,.table td{padding:10px;border-bottom:1px solid var(--border);text-align:left}
+.table th{color:var(--muted);font-size:12px;text-transform:uppercase}
+.save-bar{position:sticky;bottom:0;background:var(--bg);padding:14px;
+  border-top:1px solid var(--border);margin:20px -24px -24px;
+  display:flex;justify-content:flex-end;gap:10px}
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(100px);
+  background:var(--card);border:1px solid var(--accent);padding:14px 24px;
+  border-radius:12px;font-weight:600;opacity:0;transition:.35s;z-index:100}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+</style>
+</head>
+<body>
+<div class="login-box" id="loginBox">
+  <h1>Admin Login</h1>
+  <input id="tokenInput" type="password" placeholder="Admin Token" autocomplete="off"/>
+  <button id="loginBtn">Masuk</button>
+</div>
+
+<div id="app">
+  <div class="header">
+    <h1>Admin Panel — Duniamu</h1>
+    <button class="btn btn-ghost" onclick="logout()">Logout</button>
+  </div>
+  <div class="tabs">
+    <div class="tab active" data-tab="general">Umum</div>
+    <div class="tab" data-tab="missions">Misi</div>
+    <div class="tab" data-tab="payments">Pembayaran</div>
+    <div class="tab" data-tab="claims">Klaim</div>
+  </div>
+  <div class="panel active" id="panel-general">
+    <h2>Pengaturan Umum</h2>
+    <div class="field"><label>Nama Situs</label><input id="cfgSiteName"/></div>
+    <div class="field"><label>Slogan</label><input id="cfgSlogan"/></div>
+    <div class="field"><label>Owner (username)</label><input id="cfgOwner"/></div>
+    <div class="row">
+      <div class="field" style="flex:1"><label>Mata Uang</label><input id="cfgCurrency" placeholder="IDR"/></div>
+      <div class="field" style="flex:1"><label>Rate (1 poin = ?)</label><input id="cfgRate" type="number" placeholder="1000"/></div>
+    </div>
+    <div class="save-bar"><button class="btn" onclick="saveGeneral()">Simpan</button></div>
+  </div>
+  <div class="panel" id="panel-missions">
+    <h2>Daftar Misi</h2>
+    <div id="missionList"></div>
+    <button class="btn btn-ghost" onclick="addMission()">+ Tambah Misi</button>
+    <div class="save-bar"><button class="btn" onclick="saveMissions()">Simpan Misi</button></div>
+  </div>
+  <div class="panel" id="panel-payments">
+    <h2>Metode Pembayaran</h2>
+    <div id="paymentList"></div>
+    <button class="btn btn-ghost" onclick="addPayment()">+ Tambah Metode</button>
+    <div class="save-bar"><button class="btn" onclick="savePayments()">Simpan Pembayaran</button></div>
+  </div>
+  <div class="panel" id="panel-claims">
+    <h2>Daftar Klaim Masuk</h2>
+    <div id="claimsWrap"></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+let TOKEN = sessionStorage.getItem('duniamu_admin_token') || '';
+let CONFIG = null;
+const $ = id => document.getElementById(id);
+const showToast = m => { const t=$('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); };
+
+async function api(path, opts = {}) {
+  const r = await fetch('/api/' + path, {
+    ...opts,
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + TOKEN, ...(opts.headers||{}) },
+  });
+  const j = await r.json();
+  if (!j.ok) throw new Error(j.error || 'API error');
+  return j.data;
+}
+
+$('loginBtn').onclick = async () => {
+  TOKEN = $('tokenInput').value.trim();
+  try {
+    CONFIG = await api('admin/config');
+    sessionStorage.setItem('duniamu_admin_token', TOKEN);
+    $('loginBox').style.display = 'none';
+    $('app').style.display = 'block';
+    renderAll();
+  } catch (e) { showToast('Token salah: ' + e.message); }
+};
+
+function logout() { sessionStorage.removeItem('duniamu_admin_token'); location.reload(); }
+
+document.querySelectorAll('.tab').forEach(t => t.onclick = () => {
+  document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(x => x.classList.remove('active'));
+  t.classList.add('active');
+  $('panel-' + t.dataset.tab).classList.add('active');
+});
+
+function renderAll() {
+  $('cfgSiteName').value = CONFIG.siteName || '';
+  $('cfgSlogan').value = CONFIG.slogan || '';
+  $('cfgOwner').value = CONFIG.owner || '';
+  $('cfgCurrency').value = CONFIG.reward?.currency || 'IDR';
+  $('cfgRate').value = CONFIG.reward?.rate || 1000;
+  renderMissions();
+  renderPayments();
+  renderClaims();
+}
+
+function renderMissions() {
+  const wrap = $('missionList'); wrap.innerHTML = '';
+  (CONFIG.missions || []).forEach((m, i) => {
+    const el = document.createElement('div');
+    el.className = 'item';
+    el.innerHTML =
+      '<div class="row">' +
+      '<input value="' + (m.title||'') + '" onchange="CONFIG.missions[' + i + '].title=this.value" placeholder="Judul misi"/>' +
+      '<input type="number" value="' + (m.reward||0) + '" onchange="CONFIG.missions[' + i + '].reward=+this.value" style="max-width:100px" placeholder="Poin"/>' +
+      '<button class="btn btn-danger" onclick="CONFIG.missions.splice(' + i + ',1);renderMissions()">X</button>' +
+      '</div>' +
+      '<input value="' + (m.link||'') + '" onchange="CONFIG.missions[' + i + '].link=this.value" placeholder="URL tujuan (opsional)"/>';
+    wrap.appendChild(el);
+  });
+}
+
+function renderPayments() {
+  const wrap = $('paymentList'); wrap.innerHTML = '';
+  (CONFIG.payments || []).forEach((p, i) => {
+    const el = document.createElement('div');
+    el.className = 'item';
+    el.innerHTML =
+      '<div class="row">' +
+      '<input value="' + (p.name||'') + '" onchange="CONFIG.payments[' + i + '].name=this.value" placeholder="Nama (DANA/OVO)"/>' +
+      '<input value="' + (p.id||'') + '" onchange="CONFIG.payments[' + i + '].id=this.value" placeholder="ID" style="max-width:100px"/>' +
+      '<button class="btn btn-danger" onclick="CONFIG.payments.splice(' + i + ',1);renderPayments()">X</button>' +
+      '</div>' +
+      '<div class="row">' +
+      '<input value="' + (p.number||'') + '" onchange="CONFIG.payments[' + i + '].number=this.value" placeholder="Nomor tujuan"/>' +
+      '<input value="' + (p.holder||'') + '" onchange="CONFIG.payments[' + i + '].holder=this.value" placeholder="Atas nama"/>' +
+      '</div>' +
+      '<label><input type="checkbox" ' + (p.active?'checked':'') + ' onchange="CONFIG.payments[' + i + '].active=this.checked"/> Aktif</label>';
+    wrap.appendChild(el);
+  });
+}
+
+async function renderClaims() {
+  const wrap = $('claimsWrap'); wrap.innerHTML = 'Loading...';
+  try {
+    const claims = await api('admin/claims');
+    if (!claims.length) { wrap.innerHTML = '<p style="color:var(--muted)">Belum ada klaim.</p>'; return; }
+    wrap.innerHTML = '<table class="table"><thead><tr><th>ID</th><th>Nama</th><th>Kontak</th><th>Poin</th><th>Uang</th><th>Status</th><th>Aksi</th></tr></thead><tbody></tbody></table>';
+    const tbody = wrap.querySelector('tbody');
+    claims.forEach(c => {
+      const tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td><code>' + c.id + '</code></td>' +
+        '<td>' + c.name + '</td>' +
+        '<td>' + c.contact + '</td>' +
+        '<td>' + c.totalPoin + '</td>' +
+        '<td>' + c.totalUang.toLocaleString('id-ID') + ' ' + CONFIG.reward.currency + '</td>' +
+        '<td><span class="status ' + c.status + '">' + c.status + '</span></td>' +
+        '<td>' +
+        '<button class="btn btn-ok" onclick="updateClaim(\'' + c.id + '\',\'paid\')">Paid</button> ' +
+        '<button class="btn btn-danger" onclick="updateClaim(\'' + c.id + '\',\'rejected\')">Reject</button>' +
+        '</td>';
+      tbody.appendChild(tr);
+    });
+  } catch (e) { wrap.innerHTML = 'Error: ' + e.message; }
+}
+
+async function saveGeneral() {
+  try {
+    CONFIG = await api('admin/config', {
+      method: 'PUT',
+      body: JSON.stringify({
+        siteName: $('cfgSiteName').value,
+        slogan: $('cfgSlogan').value,
+        owner: $('cfgOwner').value,
+        reward: { currency: $('cfgCurrency').value, rate: +$('cfgRate').value },
+      }),
+    });
+    showToast('Tersimpan');
+  } catch (e) { showToast('Error: ' + e.message); }
+}
+async function saveMissions() {
+  try {
+    CONFIG = await api('admin/config', { method: 'PUT', body: JSON.stringify({ missions: CONFIG.missions }) });
+    showToast('Misi tersimpan');
+  } catch (e) { showToast('Error: ' + e.message); }
+}
+async function savePayments() {
+  try {
+    CONFIG = await api('admin/config', { method: 'PUT', body: JSON.stringify({ payments: CONFIG.payments }) });
+    showToast('Pembayaran tersimpan');
+  } catch (e) { showToast('Error: ' + e.message); }
+}
+function addMission() {
+  const nextId = Math.max(0, ...CONFIG.missions.map(m => m.id)) + 1;
+  CONFIG.missions.push({ id: nextId, title: '', reward: 10, link: '' });
+  renderMissions();
+}
+function addPayment() {
+  CONFIG.payments.push({ id: 'pm_' + Date.now(), name: '', number: '', holder: '', active: false });
+  renderPayments();
+}
+async function updateClaim(id, status) {
+  try {
+    await api('admin/claims/' + id, { method: 'PUT', body: JSON.stringify({ status }) });
+    showToast('Klaim ' + status);
+    renderClaims();
+  } catch (e) { showToast('Error: ' + e.message); }
+}
+
+if (TOKEN) { $('tokenInput').value = TOKEN; $('loginBtn').click(); }
+</script>
+</body>
+</html>
